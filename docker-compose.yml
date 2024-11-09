@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vuetest
+      MYSQL_USER: devUser
+      MYSQL_PASSWORD: devUser
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql 
+      - mysql_data:/var/lib/mysql  # persist MySql data
+
+  api:
+    build: .
+    container_name: node_api
+    environment:
+      DB_HOST: db
+      DB_USER: devUser
+      DB_PASSWORD: devUser
+      DB_NAME: vuetest
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
