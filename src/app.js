@@ -8,6 +8,7 @@ const db = mysql.createPool({
   user: "devUser",
   password: "devUser",
   database: "vuetest",
+  charset: "utf8mb4",
 });
 
 app.use(cors());

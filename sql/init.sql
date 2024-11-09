@@ -5,7 +5,7 @@ CREATE USER 'devUser'@'localhost' IDENTIFIED BY 'devUser';
 DROP DATABASE IF EXISTS vuetest;
 
 -- create database
-CREATE DATABASE vuetest;
+CREATE DATABASE vuetest CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE vuetest;
 
 -- drop table if exists
@@ -45,22 +45,24 @@ INSERT INTO product_category (name, created_date) VALUES ('Hardware', '2019-01-0
 
 -- dummy data sales_order
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Kivell', 'Accepted', 1, ' United Kingdom', '2019-01-23');
+VALUES ('Kivell', 'Accepted', 1, 'United Kingdom', '2019-01-23');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Jardine', 'Processing', 2, ' Russia', '2019-02-09');
+VALUES ('Jardine', 'Processing', 2, 'Russia', '2019-02-09');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Gill', 'Rejected', 3, ' German', '2019-02-26');
+VALUES ('Gill', 'Rejected', 3, 'German', '2019-02-26');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Sor’vino', 'Open', 2, ' Singapore', '2019-03-15');
+VALUES ('Sor''vino', 'Open', 2, 'Singapore', '2019-03-15');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Jones', 'Rejected', 4, ' German', '2019-04-01');
+VALUES ('Jones', 'Rejected', 4, 'German', '2019-04-01');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date) 
-VALUES ('Andrews', 'Processing', 1, ' Malaysia', '2019-04-18');
+VALUES ('Andrews', 'Processing', 1, 'Malaysia', '2019-04-18');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Jardine', 'Processing', 4, ' German', '2019-05-05');
+VALUES ('Jardine', 'Processing', 4, 'German', '2019-05-05');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Thompson', 'Accepted', 5, ' Malaysia', '2019-05-22');
+VALUES ('Thompson', 'Accepted', 5, 'Malaysia', '2019-05-22');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Jones', 'Open', 2, ' Taiwan', '2019-06-08');
+VALUES ('Jones', 'Open', 2, 'Taiwan', '2019-06-08');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Morgan', 'Processing', 4, ' China', '2019-04-18');
+VALUES ('Morgan', 'Processing', 4, 'China', '2019-04-18');
+INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
+VALUES ('Sarah', 'Processing', 4, 'Singapore', '2019-04-18');
