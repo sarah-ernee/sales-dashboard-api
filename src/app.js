@@ -1,5 +1,6 @@
 const express = require("express");
 const mysql = require("mysql2");
+const cors = require("cors");
 const app = express();
 
 const db = mysql.createPool({
@@ -8,6 +9,8 @@ const db = mysql.createPool({
   password: "devUser",
   database: "vuetest",
 });
+
+app.use(cors());
 app.use(express.json());
 const router = express.Router();
 
@@ -90,8 +93,6 @@ router.post("/records", (req, res) => {
   if (conditions.length > 0) {
     query += ` WHERE ${conditions.join(" AND ")}`;
   }
-
-  console.log("Logging ran query \n", query);
 
   req.db
     .promise()
