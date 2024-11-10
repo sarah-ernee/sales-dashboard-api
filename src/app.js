@@ -41,10 +41,10 @@ router.get("/records", (req, res) => {
     .query(query)
     .then(([rows]) => {
       if (rows.length === 0) {
-        res.status(204).json({ message: "No sales records found in database" });
+        return res.status(204).json({ message: "No sales records found in database" });
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Successfully retrieved all sales records",
         data: rows,
       });
@@ -115,12 +115,12 @@ router.post("/records", (req, res) => {
     .then(([rows]) => {
       let records = rows;
       if (records.length === 0) {
-        res.status(204).json({
+        return res.status(204).json({
           message: "No sales records retrieved for the filter settings",
         });
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Successfully retrieved filtered sales records",
         records,
       });
