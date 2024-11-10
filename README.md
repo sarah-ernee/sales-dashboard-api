@@ -1,9 +1,9 @@
-## sales-dashboard-api
+# sales-dashboard-api
 
 Developed using NodeJS and Express. Docker is used to allow easy instantiation of MySQL on local machine.
 Initiation of DB follows the script in /sql/init.sql
 
-# How to Run
+## How to Run
 
 1. Run `npm install` to install used dependencies.
 2. Open up Docker Desktop and run `docker compose up` in terminal. Designed docker-compose file that builds container named:
