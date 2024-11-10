@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   db:
     image: mysql:8
@@ -11,8 +11,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql 
-      - mysql_data:/var/lib/mysql  # persist MySql data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   api:
     build: .
@@ -26,6 +25,4 @@ services:
       - "8000:8000"
     depends_on:
       - db
-
-volumes:
-  mysql_data:
+    command: sh -c "sleep 10 && node src/app.js" # make sure that db is ready first

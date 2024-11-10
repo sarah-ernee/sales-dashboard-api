@@ -64,5 +64,3 @@ INSERT INTO sales_order (customer_name, status, category_id, country, created_da
 VALUES ('Jones', 'Open', 2, 'Taiwan', '2019-06-08');
 INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
 VALUES ('Morgan', 'Processing', 4, 'China', '2019-04-18');
-INSERT INTO sales_order (customer_name, status, category_id, country, created_date)
-VALUES ('Sarah', 'Processing', 4, 'Singapore', '2019-04-18');

@@ -1,5 +1,6 @@
 const express = require("express");
 const mysql = require("mysql2");
+const named = require("named-placeholders")();
 const cors = require("cors");
 const app = express();
 
@@ -23,10 +24,7 @@ router.use((req, res, next) => {
 
 // GET - all records (called on page render and minutely refreshes)
 router.get("/records", (req, res) => {
-  req.db
-    .promise()
-    .query(
-      `
+  let query = `
     SELECT 
       a.object_id AS order_no,
       a.customer_name,
@@ -36,21 +34,31 @@ router.get("/records", (req, res) => {
       DATE_FORMAT(a.created_date, '%c/%e/%Y') AS created_date
     FROM sales_order a
     JOIN product_category b ON a.category_id = b.object_id
-  `
-    )
+  `;
+
+  req.db
+    .promise()
+    .query(query)
     .then(([rows]) => {
-      res.json(rows);
+      if (rows.length === 0) {
+        res.status(204).json({ message: "No sales records found in database" });
+      }
+
+      res.status(200).json({
+        message: "Successfully retrieved all sales records",
+        data: rows,
+      });
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ message: "Error fetching orders" });
+      res.status(500).json({ message: "Failed to retrieve all sales records" });
     });
 });
 
 // POST - filtered records
 // Separated from the GET /records endpoints for clearer separation of concern
 router.post("/records", (req, res) => {
-  const { date_to, date_from, customers, countries, status, category } =
+  const { date_from, date_to, customers, countries, status, category } =
     req.body;
 
   let query = `
@@ -64,52 +72,66 @@ router.post("/records", (req, res) => {
     FROM sales_order a
     JOIN product_category b ON a.category_id = b.object_id
   `;
+
+  const params = {};
   const conditions = [];
-  const values = [];
 
   // Conditional WHERE clauses
-  if (date_to && date_from) {
-    conditions.push("a.created_date BETWEEN ? AND ?");
-    values.push(date_to, date_from);
+  if (date_from && date_to) {
+    conditions.push("a.created_date BETWEEN :dateFrom AND :dateTo");
+    params.dateFrom = date_from;
+    params.dateTo = date_to;
   }
-  if (customers.length > 0) {
-    conditions.push(
-      `a.customer_name IN (${customers.map(() => "?").join(", ")})`
-    );
-    values.push(...customers);
+
+  if (customers?.length) {
+    conditions.push(`a.customer_name IN (:customers)`);
+    params.customers = customers;
   }
-  if (countries.length > 0) {
-    conditions.push(`a.country IN (${countries.map(() => "?").join(", ")})`);
-    values.push(...countries);
+
+  if (countries?.length) {
+    conditions.push(`a.country IN (:countries)`);
+    params.countries = countries;
   }
-  if (status.length > 0) {
-    conditions.push(`a.status IN (${status.map(() => "?").join(", ")})`);
-    values.push(...status);
+
+  if (status?.length) {
+    conditions.push(`a.status IN (:status)`);
+    params.status = status;
   }
-  if (category.length > 0) {
-    conditions.push(`b.name IN (${customer_name.map(() => "?").join(", ")})`);
-    values.push(...category);
+
+  if (category?.length) {
+    conditions.push(`b.name IN (:categories)`);
+    params.categories = category;
   }
 
   if (conditions.length > 0) {
     query += ` WHERE ${conditions.join(" AND ")}`;
   }
 
+  const [preparedQuery, values] = named(query, params);
+
   req.db
     .promise()
-    .query(query, values)
+    .query(preparedQuery, values)
     .then(([rows]) => {
-      res.json(rows);
+      let records = rows;
+      if (records.length === 0) {
+        res.status(204).json({
+          message: "No sales records retrieved for the filter settings",
+        });
+      }
+
+      res.status(200).json({
+        message: "Successfully retrieved filtered sales records",
+        records,
+      });
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ message: "Error fetching filtered orders" });
+      res
+        .status(500)
+        .json({ message: "Failed to retrieve filtered sales records" });
     });
 });
-
-// POST - create new record (stubbed, add your creation logic)
-// PATCH - update records (stubbed, add your update logic)
-// DELETE - remove records by orderNo (stubbed, add your delete logic)
 
 app.use("/api", router);
 const PORT = process.env.PORT || 8000;
